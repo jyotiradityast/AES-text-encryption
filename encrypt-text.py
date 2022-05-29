@@ -36,26 +36,19 @@ def encrypt():
     key_original=entry_key.get()
     key_encode=key_original.encode()
     
-    key_hash=hashlib.sha256(key_encode).digest()
-    #Hashing the encoded key to get a 256 bit key
+    key_hash=hashlib.sha256(key_encode).digest()    #Hashing the encoded key to get a 256 bit key
 
-    cipher=AES.new(key_hash,AES.MODE_CBC)
-    #Instantiating a cipher object
+    cipher=AES.new(key_hash,AES.MODE_CBC)   #Instantiating a cipher object
 
-    ciphertext=cipher.encrypt(pad(byte_plaintext,AES.block_size))
-    #Encrytpting the byte_plaintext after padding
+    ciphertext=cipher.encrypt(pad(byte_plaintext,AES.block_size))   #Encrytpting the byte_plaintext after padding
 
-    ciphertext_display=b64encode(ciphertext).decode('utf-8')
-    #Converting the ciphertext in base64 byte sequence to string for display.
+    ciphertext_display=b64encode(ciphertext).decode('utf-8')    #Converting the ciphertext in base64 byte sequence to string for display.
 
-    entry_cipher.insert(0,ciphertext_display)
-    #Displaying the Ciphertext in utf-8.
+    entry_cipher.insert(0,ciphertext_display)   #Displaying the Ciphertext in utf-8.
 
-    iv_display=b64encode(cipher.IV).decode('utf-8')
-    #Retrieving the Initial Vector that was assigned randomly in utf-8 from base64 byte sequence
+    iv_display=b64encode(cipher.IV).decode('utf-8')    #Retrieving the Initial Vector that was assigned randomly in utf-8 from base64 byte sequence
 
-    entry_iv.insert(0,iv_display)
-    #Displaying the Initial Vector in utf-8
+    entry_iv.insert(0,iv_display)   #Displaying the Initial Vector in utf-8
     
     #for testing----------------------------------------#
     print("Cipher Text: ",ciphertext)                   #
@@ -75,32 +68,23 @@ def decrypt():
         entry_pt.delete(0, END)
         ciphertext=entry_cipher.get()
         decode_ciphertext=b64decode(ciphertext)
-        #Retrieving ciphertext
-
+        
         iv_entered=entry_iv.get()
         decode_iv=b64decode(iv_entered)
-        #Retrieving Initial Vector
-
+        
         key_original=entry_key.get()
-        #Retrieving the key
+        
+        key_encode=key_original.encode()    #encoding the key for hashing
 
-        key_encode=key_original.encode()
-        #encoding the key for hashing
+        key_hash=hashlib.sha256(key_encode).digest()    #Hashing the entered key to get a 256 bit key
 
-        key_hash=hashlib.sha256(key_encode).digest()
-        #Hashing the entered key to get a 256 bit key
+        cipher=AES.new(key_hash,AES.MODE_CBC,decode_iv) #Instantiating a cipher object
 
-        cipher=AES.new(key_hash,AES.MODE_CBC,decode_iv)
-        #Instantiating a cipher object
+        plaintext=unpad(cipher.decrypt(decode_ciphertext), AES.block_size)  #decrytpting and unpadding to get the plaintext in form of bytes 
 
-        plaintext=unpad(cipher.decrypt(decode_ciphertext), AES.block_size)
-        #decrytpting and unpadding to get the plaintext in form of bytes 
+        plaintext_display=plaintext.decode()    #converting the plaintext from byte sequence to normal string.
 
-        plaintext_display=plaintext.decode()
-        #converting the plaintext from byte sequence to normal string.
-
-        entry_pt.insert(0,plaintext_display)
-        #Displaying the Ciphertext in utf-8
+        entry_pt.insert(0,plaintext_display) #Displaying the Ciphertext in utf-8
 
         #for testing----------------------------------------#
         print("Decode Ciphertext: ",decode_ciphertext)      #
@@ -120,43 +104,30 @@ def decrypt():
 
 def clip_encrypt():
 
-    root.clipboard_clear()
-    #clears the clipboard
-
-    root.clipboard_append("Ciphertext: "+entry_cipher.get())
-    #copies encrypted text to clipboard
+    root.clipboard_clear()  #clears the clipboard
+    root.clipboard_append("Ciphertext: "+entry_cipher.get())    #copies encrypted text to clipboard
 
     return
 
 def clip_decrypt():
 
-    root.clipboard_clear()
-    #clears the clipboard
-
-    root.clipboard_append(entry_pt.get())
-    #copies decrypted text to clipboard
+    root.clipboard_clear()  #clears the clipboard
+    root.clipboard_append(entry_pt.get())   #copies decrypted text to clipboard
 
     return
 
 def clip_iv():
 
-    root.clipboard_clear()
-    #clears the clipboard
-
-    root.clipboard_append("Initial Vector: "+entry_iv.get())
-    #copies Initial Vector to clipboard
+    root.clipboard_clear()  #clears the clipboard
+    root.clipboard_append("Initial Vector: "+entry_iv.get())    #copies Initial Vector to clipboard
 
     return
 
 def clip_all():
 
-    root.clipboard_clear()
-    #clears the clipboard
-
+    root.clipboard_clear()  #clears the clipboard
     all_string="Ciphertext: "+entry_cipher.get()+"\n"+"Initial Vector: "+entry_iv.get()
-
-    root.clipboard_append(all_string)
-    #copies Encrypted Text and Initial Vector to clipboard
+    root.clipboard_append(all_string)   #copies Encrypted Text and Initial Vector to clipboard
 
     return
 
@@ -229,8 +200,6 @@ button_info=Button(root,text="Info", command=info)
 button_info.grid(row=8,column=1,sticky="nesw",padx=10, pady=7)
 
 #--------------------------------------------
-
 root.mainloop()
-
 #--------------------------------------------
 #Code: JST
